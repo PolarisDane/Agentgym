@@ -7,10 +7,18 @@ from os.path import dirname, abspath, join
 BASE_DIR = dirname(abspath(__file__))
 DEBUG_PROD_SIZE = None  # set to `None` to disable
 
+# The env server always runs with num_products=1000, and load_products() truncates
+# to products[:1000] AFTER json.load()ing the whole file. Pointing at the full files
+# therefore parsed 5.5GB (+186MB attrs) per server process just to keep 1000 items --
+# ~20GB peak RSS and minutes of startup, which capped how many env servers fit per GPU.
+# The 1K files are VERIFIED byte-equivalent for those 1000 products:
+#   items_shuffle_1000.json  == items_shuffle.json[:1000]   (same asins, same order,
+#                               dicts identical raw AND after clean_product_keys)
+#   items_ins_v2_1000.json   == items_ins_v2.json restricted to those 1000 asins
+# so this switch is semantically a no-op; it only removes the wasted parse.
+# (search_engine/indexes_1k, selected by num_products=1000, matches this same subset.)
 DEFAULT_ATTR_PATH = join(BASE_DIR, '../data/items_ins_v2_1000.json')
 DEFAULT_FILE_PATH = join(BASE_DIR, '../data/items_shuffle_1000.json')
-# DEFAULT_ATTR_PATH = join(BASE_DIR, '../data/items_ins_v2.json')
-# DEFAULT_FILE_PATH = join(BASE_DIR, '../data/items_shuffle.json')
 DEFAULT_REVIEW_PATH = join(BASE_DIR, '../data/reviews.json')
 
 FEAT_CONV = join(BASE_DIR, '../data/feat_conv.pt')

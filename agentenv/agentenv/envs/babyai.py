@@ -49,6 +49,8 @@ class BabyAIEnvClient(BaseEnvClient):
             json=data,
             timeout=self.timeout,
         )
+        if res.status_code != 200:
+            print(f"Error in _post to {path}: Status Code {res.status_code}, Response: {res.text}")
         assert res.status_code == 200
         return res.json()
 

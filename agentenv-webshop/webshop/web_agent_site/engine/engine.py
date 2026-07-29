@@ -227,13 +227,21 @@ def clean_product_keys(products):
     return products
 
 
+# Global cache to prevent redundant loading of massive product data
+_GLOBAL_PRODUCT_CACHE = {}
+
 def load_products(filepath, num_products=None, human_goals=True):
+    cache_key = (filepath, num_products, human_goals)
+    if cache_key in _GLOBAL_PRODUCT_CACHE:
+        print(f'Loading products from cache for {filepath}...')
+        return _GLOBAL_PRODUCT_CACHE[cache_key]
+
     # TODO: move to preprocessing step -> enforce single source of truth
     with open(filepath) as f:
         products = json.load(f)
     print('Products loaded.')
     products = clean_product_keys(products)
-    
+
     # with open(DEFAULT_REVIEW_PATH) as f:
     #     reviews = json.load(f)
     all_reviews = dict()
@@ -359,4 +367,7 @@ def load_products(filepath, num_products=None, human_goals=True):
 
     product_item_dict = {p['asin']: p for p in all_products}
     product_prices = generate_product_prices(all_products)
-    return all_products, product_item_dict, product_prices, attribute_to_asins
+
+    res = (all_products, product_item_dict, product_prices, attribute_to_asins)
+    _GLOBAL_PRODUCT_CACHE[cache_key] = res
+    return res

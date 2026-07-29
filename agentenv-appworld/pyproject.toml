@@ -1,0 +1,15 @@
+[project]
+name = "agentenv_appworld"
+version = "0.0.1"
+description = "AgentGym env server wrapping the AppWorld engine"
+dependencies = ["uvicorn", "fastapi", "pydantic", "appworld"]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project.scripts]
+appworld-env = "agentenv_appworld:launch"
