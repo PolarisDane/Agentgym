@@ -6,6 +6,7 @@ from .movie import MovieEnvClient, MovieTask
 from .sciworld import SciworldEnvClient, SciworldTask, SciWorldAdapter
 from .sheet import SheetEnvClient, SheetTask
 from .sqlgym import SqlGymEnvClient, SqlGymTask
+from .tau2 import Tau2Adapter, Tau2EnvClient, Tau2Task
 from .textcraft import TextCraftEnvClient, TextCraftTask
 from .todo import TodoEnvClient, TodoTask
 from .weather import WeatherEnvClient, WeatherTask

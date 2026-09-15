@@ -1,0 +1,15 @@
+[project]
+name = "agentenv_tau2"
+version = "0.0.1"
+description = "AgentGym env server wrapping the tau2-bench (tau^2 / tau^3) AgentGymEnv"
+dependencies = ["uvicorn", "fastapi", "pydantic", "gymnasium"]
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project.scripts]
+tau2-env = "agentenv_tau2:launch"
