@@ -171,7 +171,7 @@ class ALFWorld_Wrapper:
             raise NameError(f"The task with environment {idx} has finished.")
 
 
-os.environ["ALFWORLD_DATA"] = "/inspire/hdd/project/robot-reasoning/xuyue-p-xuyue/ziyu/.cache/alfworld"
+os.environ["ALFWORLD_DATA"] = os.getenv("ALFWORLD_DATA", "/data1/datasets/alfworld")
 server = ALFWorld_Wrapper(
     data_path=os.environ["ALFWORLD_DATA"],
     config_path=os.path.join(

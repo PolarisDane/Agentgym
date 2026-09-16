@@ -18,3 +18,7 @@ class StepResponse(BaseModel):
 class ResetQuery(BaseModel):
     env_idx: int
     session_id: Optional[int] = None
+
+
+class CloseQuery(BaseModel):
+    env_idx: int

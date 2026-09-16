@@ -4,6 +4,7 @@ contract so the AgentGym client/controller can talk to it unchanged:
   POST /create              -> env_idx (int)
   POST /reset  {env_idx, session_id}  -> instruction (str)
   POST /step   {env_idx, action}      -> {state, reward, done, info}
+  POST /close  {env_idx}              -> None
   GET  /observation?env_idx=          -> str
   GET  /instruction_text?env_idx=     -> str
 """
@@ -15,7 +16,7 @@ from typing import List
 from fastapi import FastAPI, Request
 
 from .environment import appworld_env_server
-from .model import ResetQuery, StepQuery, StepResponse
+from .model import CloseQuery, ResetQuery, StepQuery, StepResponse
 from .utils import debug_flg
 
 app = FastAPI(debug=debug_flg)
@@ -65,6 +66,16 @@ async def step(step_query: StepQuery):
         step_query.env_idx, step_query.action
     )
     return StepResponse(state=state, reward=reward, done=done, info=info)
+
+
+# AppWorld.close() 清理进程级全局状态(clear_local_dbs_cache / id_to_time_freezer /
+# ApiCollection)。不调用它，实例会逐轮累积并互相干扰，_save_state 会报
+# FileNotFoundError: .../dbs/model_hashes.json。verl 每轮 rollout 结束会调
+# client.close()，必须有对应端点。
+@app.post("/close")
+async def close(close_query: CloseQuery):
+    appworld_env_server.close(close_query.env_idx)
+    return None
 
 
 @app.get("/observation", response_model=str)
