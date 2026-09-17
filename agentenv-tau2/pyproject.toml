@@ -13,3 +13,6 @@ build-backend = "pdm.backend"
 
 [project.scripts]
 tau2-env = "agentenv_tau2:launch"
+
+[tool.pdm.build]
+includes = ["agentenv_tau2"]
